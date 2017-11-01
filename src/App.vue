@@ -3,13 +3,32 @@
         <div class="row">
             <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
                 <h1>Animations</h1>
+                <hr>
+                <select v-model="alertAnimation" class="form-control">
+                  <option value="fade">Fade</option>
+                  <option value="slide">Slide</option>
+                </select>
+                <br></br>
                 <button class="btn btn-primary" @click="show = !show">show alert</button>
-                <br>
-                <transition name="fade">
+                <br></br>
+                <transition appear :name="alertAnimation">
+                  <div class="alert alert-info" v-show="show">This is info</div>
+                </transition>
+                <!-- Mixing transition and animation -->
+                <transition appear name="slide" type="animation">
                   <div class="alert alert-info" v-if="show">This is info</div>
                 </transition>
-                <transition name="slide">
+                <!-- initial animation appear -->
+                <transition
+                  appear
+                  enter-active-class="animated bounce"
+                  leave-active-class="animated jello">
                   <div class="alert alert-info" v-if="show">This is info</div>
+                </transition>
+                <transition :name="alertAnimation" mode="out-in">
+                  <!-- Add key property -->
+                  <div class="alert alert-info" v-if="show" key="info">This is info</div>
+                  <div class="alert alert-warning" v-else key="warning">This is Warning</div>
                 </transition>
             </div>
         </div>
@@ -20,7 +39,8 @@
     export default {
         data() {
             return {
-              show: false
+              show: true,
+              alertAnimation: "fade"
             }
         }
     }
@@ -45,11 +65,13 @@
   }
 
   .slide-enter{
-
+    opacity: 0;
+    /*transform: translateY(20px);*/
   }
 
   .slide-enter-active{
     animation: slide-in 1s ease-out forwards;
+    transition: opacity .5s;
   }
 
   .slide-leave{
@@ -58,6 +80,8 @@
 
   .slide-leave-active{
     animation: slide-out 1s ease-out forwards;
+    transition: opacity 1s;
+    opacity: 0;
   }
 
   @keyframes slide-in {
